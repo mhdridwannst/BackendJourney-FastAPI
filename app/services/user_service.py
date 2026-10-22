@@ -10,3 +10,20 @@ def create_user(data: UserCreate) -> dict:
     users_db[next_id] = new_user
     next_id += 1
     return new_user
+
+
+def list_users() -> list[dict]:
+    return list(users_db.values())
+
+
+def get_user(user_id: int) -> dict | None:
+    return users_db.get(user_id)
+
+
+def delete_user(user_id: int) -> bool:
+    return users_db.pop(user_id, None) is not None
+
+
+def update_user(user_id: int, data: dict) -> dict:
+    users_db[user_id].update(data)
+    return users_db[user_id]
