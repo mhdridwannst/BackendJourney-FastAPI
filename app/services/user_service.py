@@ -1,29 +1,17 @@
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.models.user import User
 from app.schemas.user import UserCreate
 
-users_db: dict[int, dict] = {}
-next_id = 1
+
+def create_user(db: Session, data: UserCreate) -> User:
+    user = User(**data.model_dump())
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
 
 
-def create_user(data: UserCreate) -> dict:
-    global next_id
-    new_user = {"id": next_id, **data.model_dump()}
-    users_db[next_id] = new_user
-    next_id += 1
-    return new_user
-
-
-def list_users() -> list[dict]:
-    return list(users_db.values())
-
-
-def get_user(user_id: int) -> dict | None:
-    return users_db.get(user_id)
-
-
-def delete_user(user_id: int) -> bool:
-    return users_db.pop(user_id, None) is not None
-
-
-def update_user(user_id: int, data: dict) -> dict:
-    users_db[user_id].update(data)
-    return users_db[user_id]
+def list_users(db: Session) -> list[User]:
+    return list(db.scalars(select(User)).all())
