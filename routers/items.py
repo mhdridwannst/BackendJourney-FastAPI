@@ -1,8 +1,14 @@
 from fastapi import APIRouter
+from pydantic import BaseModel
 
 router = APIRouter()
 
 
-@router.get("/items/")
-async def read_items():
-    return [{"name": "Wannn Sion"}, {"name": "Mhd. Ridwan"}]
+class Item(BaseModel):
+    name: str
+    price: float
+
+
+@router.post("/items")
+async def create_item(item: Item):
+    return {"message": "created", "data": item}
