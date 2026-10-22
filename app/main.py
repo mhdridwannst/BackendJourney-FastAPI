@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from routers import items
-from routers import users
+from app.routers import items
+from app.routers import users
 from fastapi.responses import JSONResponse
 
 app = FastAPI()
@@ -14,6 +14,6 @@ async def root():
     return {"message": "Website is running"}
 
 
-@app.get("/hello")
-async def read_hello():
-    return JSONResponse({"message": "Hello wannn, nice to meet you!"}, status_code=200)
+@app.get("/health")
+async def health_check():
+    return JSONResponse(content={"status": "Ok"})
