@@ -13,5 +13,22 @@ def create_user(db: Session, data: UserCreate) -> User:
     return user
 
 
+def delete_user(db: Session, user: User) -> None:
+    db.delete(user)
+    db.commit()
+
+
+def update_user(db: Session, user: User, data: dict) -> None:
+    for key, value in data.items():
+        setattr(user, key, value)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
 def list_users(db: Session) -> list[User]:
     return list(db.scalars(select(User)).all())
+
+
+def get_user(db: Session, user_id: int) -> User | None:
+    return db.get(User, user_id)

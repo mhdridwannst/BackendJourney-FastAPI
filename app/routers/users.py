@@ -22,17 +22,17 @@ def list_users(db: Session = Depends(get_db)):
     return user_service.list_users(db)
 
 
-@router.get("/{user_id}")
-def get_user(user_id: int):
-    user = user_service.get_user(user_id)
+@router.get("/{user_id}", response_model=UserRead)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    user = user_service.get_user(db, user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="User tidak ditemukan")
     return user
 
 
-@router.patch("/{user_id}")
-def patch_user(user_id: int, user_data: UserUpdate):
-    user = user_service.get_user(user_id)
+@router.patch("/{user_id}", response_model=UserRead)
+def patch_user(user_id: int, user_data: UserUpdate, db: Session = Depends(get_db)):
+    user = user_service.get_user(db, user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="User tidak ditemukan")
 
@@ -41,11 +41,12 @@ def patch_user(user_id: int, user_data: UserUpdate):
         raise HTTPException(
             status_code=400, detail="Tidak ada data yang diberikan untuk diperbarui")
 
-    update_user = user_service.update_user(user_id, update_dict)
-    return update_user
+    return user_service.update_user(db, user, update_dict)
 
 
 @router.delete("/{user_id}", status_code=204)
-def delete_user(user_id: int):
-    if not user_service.delete_user(user_id):
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    user = user_service.get_user(db, user_id)
+    if user is None:
         raise HTTPException(status_code=404, detail="User tidak ditemukan")
+    user_service.delete_user(db, user)
