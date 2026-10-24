@@ -1,12 +1,12 @@
 from fastapi import FastAPI
-from app.routers import items
-from app.routers import users
+from app.routers import items, users, auth
 from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
 app.include_router(items.router)
 app.include_router(users.router)
+app.include_router(auth.router)
 
 
 @app.get("/")

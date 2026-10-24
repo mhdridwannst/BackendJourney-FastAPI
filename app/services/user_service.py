@@ -2,8 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
-from app.security import hash_password
-
+from app.security import hash_password, verify_password
 from app.models.user import User
 from app.schemas.user import UserCreate
 
@@ -53,3 +52,9 @@ def list_users(db: Session) -> list[User]:
 
 def get_user(db: Session, user_id: int) -> User | None:
     return db.get(User, user_id)
+
+def authenticate_user(db: Session, email: str, password: str) -> User | None:
+    user = db.scalar(select(User).where(User.email == email))
+    if user is None or not verify_password(password, user.hashed_password):
+        return None
+    return user
