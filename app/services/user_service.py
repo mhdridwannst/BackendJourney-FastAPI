@@ -23,7 +23,10 @@ def create_user(db: Session, data: UserCreate) -> User:
 
 def update_user(db: Session, user: User, data: dict) -> User:
     for key, value in data.items():
-        setattr(user, key, value)
+        if key == "password":
+            user.hashed_password = hash_password(value)
+        else:
+            setattr(user, key, value)
     try:
         db.commit()
     except IntegrityError:
