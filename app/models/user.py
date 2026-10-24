@@ -11,3 +11,4 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(50))
     email: Mapped[str] = mapped_column(String(255), unique=True)
     age: Mapped[int]
+    hashed_password: Mapped[str] = mapped_column(String(255))

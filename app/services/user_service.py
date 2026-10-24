@@ -2,13 +2,15 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
+from app.security import hash_password
 
 from app.models.user import User
 from app.schemas.user import UserCreate
 
 
 def create_user(db: Session, data: UserCreate) -> User:
-    user = User(**data.model_dump())
+    user = User(**data.model_dump(exclude={"password"}),
+                hashed_password=hash_password(data.password),)
     db.add(user)
     try:
         db.commit()

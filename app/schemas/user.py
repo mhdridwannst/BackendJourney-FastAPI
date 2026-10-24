@@ -6,6 +6,7 @@ class UserCreate(BaseModel):
     name: str = Field(min_length=2, max_length=50)
     email: EmailStr
     age: int = Field(ge=17, le=100)
+    password: str = Field(min_length=8, max_length=128)
 
 
 class UserUpdate(BaseModel):
