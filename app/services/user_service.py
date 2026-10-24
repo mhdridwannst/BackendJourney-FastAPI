@@ -43,7 +43,7 @@ def delete_user(db: Session, user: User) -> None:
 
 
 def list_users(db: Session) -> list[User]:
-    return list(db.scalars(select(User)).all())
+    return list(db.scalars(select(User)).order_by(User.id).all())
 
 
 def get_user(db: Session, user_id: int) -> User | None:
