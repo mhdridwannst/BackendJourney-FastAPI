@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
-from app.security import hash_password, verify_password
+from app.security import DUMMY_HASH, hash_password, verify_password
 from app.models.user import User
 from app.schemas.user import UserCreate
 
@@ -47,14 +47,18 @@ def delete_user(db: Session, user: User) -> None:
 
 
 def list_users(db: Session) -> list[User]:
-    return list(db.scalars(select(User)).order_by(User.id).all())
+    return list(db.scalars(select(User).order_by(User.id)).all())
 
 
 def get_user(db: Session, user_id: int) -> User | None:
     return db.get(User, user_id)
 
+
 def authenticate_user(db: Session, email: str, password: str) -> User | None:
     user = db.scalar(select(User).where(User.email == email))
-    if user is None or not verify_password(password, user.hashed_password):
+    if user is None:
+        verify_password(password, DUMMY_HASH)
+        return None
+    if not verify_password(password, user.hashed_password):
         return None
     return user

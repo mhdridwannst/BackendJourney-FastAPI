@@ -5,6 +5,7 @@ import jwt
 from dotenv import load_dotenv
 from pwdlib import PasswordHash
 
+
 load_dotenv()
 
 SECRET_KEY = os.environ["SECRET_KEY"]
@@ -12,6 +13,8 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 password_hash = PasswordHash.recommended()
+
+DUMMY_HASH = password_hash.hash("dummy-password-not-used")
 
 
 def hash_password(password: str) -> str:
