@@ -12,3 +12,5 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True)
     age: Mapped[int]
     hashed_password: Mapped[str] = mapped_column(String(255))
+    role: Mapped[str] = mapped_column(
+        String(20), default="user", server_default="user")

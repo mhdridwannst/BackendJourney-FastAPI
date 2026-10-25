@@ -27,3 +27,10 @@ def get_current_user(
     if user is None:
         raise credentials_error
     return user
+
+
+def require_admin(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=403, detail="Hanya admin yang bisa mengakses ini!")
+    return current_user
