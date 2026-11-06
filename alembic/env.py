@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 
 from app.database import Base
 from app.models import user  
+from app.models import product
 
 from logging.config import fileConfig
 
